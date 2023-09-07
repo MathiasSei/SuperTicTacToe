@@ -1,0 +1,1 @@
+This is my attempt on making a AI which will learn to play TicTacToe. It will be trained with reeinforeced learning. 
