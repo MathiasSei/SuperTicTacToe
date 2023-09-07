@@ -1,35 +1,82 @@
-class SmallGameBoard:
-    def __init__(self, boardNumb): #Initialises board. Boardnumb sets what small board this should be numbered as inside bigBoard.
-        boardNumb = boardNumb * 10
-        self._game = [[1+boardNumb, 2+boardNumb, 3+boardNumb],[4+boardNumb, 5+boardNumb, 6+boardNumb],[7+boardNumb, 8+boardNumb, 9+boardNumb]]
+class gameBoard:
+    def __init__(self, gameNumb):
+        self.game = [] #Current gamestate
+        self.gameLog = [] #Gamelog of all gamestates.
+        self._moves = 0 #Counter to decide when game is over.
+        self._gameOn = True
+
+        #Populates game with numbers inside squares.
+        gameNumb = gameNumb * 10
+        for i in range(1, 10):
+            self.game.append(i + gameNumb)
+        self.gameLog.append(list(self.game))
+
         self.showBoard()
+        self.runGame()
 
-    def showBoard(self): #Prints board
-        c = 0
-        for o in self._game:
-            print("|", end="")
-            for i in o:
-                print(i, end="")
-                print("|", end="")
-            print()
-            if c < 2:
-                print("-"*10)
-            c += 1
-        print("X"*10)
+    #Prints gameboard with the current gamestate inside.
+    def showBoard(self):
+        x = 0
+        print("┌──┬──┬──┐")
+        for i in range(3):
+            for p in range(3):
+                print("│", end="")
+                print(self.game[x], end="")
+                x += 1
+            print("│")
+            if i < 2:
+                print("├──┼──┼──┤")
+        print("└──┴──┴──┘")
 
-    def playSpace(self, player, space): #Takes player char and places on selected space.
-        for y in self._game:
-            try: #Finds space in board-array
-                arrayX = self._game.index(y)
-                arrayY = y.index(space)
-            except:
-                continue #TODO Error handling when space is taken/not present
+    #Takes input from users. First x then o.
+    def runGame(self):
+        player = "x"
+        while self._gameOn == True:
+            space = int(input(f"It's {player}'s turn. Pick a space: "))
+            if self.playSpace(player, space) == "Invalid":
+                print("Invalid input, try again!")
+            elif player == "x":
+                player = "o"
             else:
-                self._game[arrayX].pop(arrayY) #Removes "space-number"
-                self._game[arrayX].insert(arrayY, " " + player) #Insers player char
-            self.showBoard() #Prints new board
+                player = "x"
 
+    #Puts players piece in selected square.
+    def playSpace(self, player, space):
+        try:
+            indexSpace = self.game.index(space)
+        except:
+            return "Invalid"
+        else: 
+            self._moves += 1
+            self.game.pop(indexSpace)
+            self.game.insert(indexSpace, " " + player)
+            self.showBoard()
+            self.saveMoves()
+            self.checkWin()
 
-game1 = SmallGameBoard(2)
+    #Checks if any of the possible three in a row combinations are met, or if all the squares are filled. 
+    def checkWin(self):
+        winConditions = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [1, 4, 7], [2, 5, 8], [3, 6, 9], [1, 5, 9], [3, 5, 7]]
+        for i in winConditions:
+            if (self.game[i[0]-1] == " x") and (self.game[i[1]-1] == " x") and (self.game[i[2]-1] == " x"):
+                print(f"X has three in a row in squares {i}")
+                self.gameOver()
+                break
+            elif (self.game[i[0]-1] == " o") and (self.game[i[1]-1] == " o") and (self.game[i[2]-1] == " o"):
+                print(f"O has three in a row in squares {i}")
+                self.gameOver()
+                break
+            elif self._moves >= 9:  #TODO Change finish condidtion to check if all squares are filled, not based on movecount.
+                print("No more moves! No one won!")
+                self.gameOver()
+                break
+    
+    def gameOver(self):
+        print("The game is over, thank you for playing!")
+        self._gameOn = False
 
-game1.playSpace("x", 21)
+    #Saves each rounds gamestate for AI.
+    def saveMoves(self):
+        self.gameLog.append(list(self.game))
+
+game1 = gameBoard(1)    
