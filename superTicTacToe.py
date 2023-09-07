@@ -38,7 +38,7 @@ class gameBoard:
             elif player == "x":
                 player = "o"
             else:
-                player = "x"
+                player = "x" #TODO Make each player move a function so it is easier to pass to the AI. 
 
     #Puts players piece in selected square.
     def playSpace(self, player, space):
