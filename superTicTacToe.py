@@ -78,5 +78,3 @@ class gameBoard:
     #Saves each rounds gamestate for AI.
     def saveMoves(self):
         self.gameLog.append(list(self.game))
-
-game1 = gameBoard(1)    
