@@ -1,3 +1,4 @@
+#Experimenting to see how lists are stored and modified. 
 y = 5
 
 x = y
