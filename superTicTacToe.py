@@ -40,6 +40,9 @@ class gameBoard:
             else:
                 player = "x" #TODO Make each player move a function so it is easier to pass to the AI. 
 
+    def xPlayer(self, square): #TODO Fix code here
+        player = "x"
+
     #Puts players piece in selected square.
     def playSpace(self, player, space):
         try:
